@@ -75,3 +75,26 @@ srun: error: nid001096: tasks 0,2,4: Terminated
 srun: Force Terminated StepId=40341.0
 + exit 1
 ```
+
+## using a different icon binary
+
+* *NOTE* here we use a binary that was built using `cray-mpich 8.1.26` with the files we copied for the version build with `8.1.18`
+
+Because the ICON binary is built with rpath and static linking, we can directly copy a binary built elsewhere into the `bin` path of the directory that we copied above without having to copy all the other files again.
+
+e.g. if I am in the `run` path:
+```
+┌ tasna:tasnam-ln002 /scratch/mch/bcumming/icon-test/tasnam/run
+└── cp /scratch/mch/fgessler/ICON/master/tasnam_PE/bin/icon ../bin/icon-g2g-mpich8.1.26
+```
+
+Make a backup of the old icon executable, and replace it with your new version.
+
+So that the new binary can find the libraries that it was linked against, we have to add a flag to the sbatch file `exp.mch_opr_r04b07.run`:
+
+```
+#SBATCH --reservation=cpe
+#SBATCH --uenv=/scratch/mch/bcumming/tasna-v5_cray-mpich-8.1.26.sqfs:/mch-environment/v5
+```
+
+See the file `uenv.md` in this repository for more information on how this works.
